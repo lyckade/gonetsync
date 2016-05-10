@@ -2,21 +2,10 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 )
-
-func main() {
-
-	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/server/file/{package}", ServerFileGET).Methods("GET")
-	router.HandleFunc("/server/file/{package}", ServerFilePUT).Methods("PUT")
-	router.HandleFunc("/client/file/{package}", ClientFileGET).Methods("GET")
-	log.Fatal(http.ListenAndServe(":8081", router))
-
-}
 
 //ServerFileGET is a request to the server to send informations
 //about a file. If the File does exist a os.FileInfo is sent
