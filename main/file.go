@@ -36,12 +36,20 @@ func NewFileInfo(fpath string) FileInfo {
 	return fi
 }
 
-//JSON returns a JSON string of the fileInfo
-func (fi *FileInfo) JSON() string {
+//JSON returns a JSON []byte
+func (fi *FileInfo) JSON() []byte {
 	s, err := json.Marshal(fi)
 	if err != nil {
 		myLogger.Print(err)
 	}
+	return s
+}
 
-	return string(s)
+//Unmarshal takes the JSON Data as []byte and writes it into the
+//FileInfo
+func (fi *FileInfo) Unmarshal(data []byte) {
+	err := json.Unmarshal(data, fi)
+	if err != nil {
+		myLogger.Print(err)
+	}
 }

@@ -24,5 +24,4 @@ func addRoutes(router *mux.Router) {
 	router.HandleFunc("/server/file/{package}/", ServerFileGET).Methods("GET")
 	router.HandleFunc("/server/file/{package}", ServerFilePUT).Methods("PUT")
 	//	router.HandleFunc("/client/file/{package}", ClientFileGET).Methods("GET")
-
 }
