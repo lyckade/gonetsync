@@ -1,15 +1,16 @@
-package main
+package file
 
 import (
 	"encoding/json"
 	"os"
+	"raspi/apxp/golib/mylogger"
 	"strconv"
 	"strings"
 	"time"
 )
 
-// FileInfo is the datatype for the communiction between client and server
-type FileInfo struct {
+// Info is the datatype for the communiction between client and server
+type Info struct {
 	//ModTime the last modification time
 	ModTime time.Time
 	//FilePath is a slice of strings because the file is on the server and
@@ -19,17 +20,19 @@ type FileInfo struct {
 	Exists bool
 }
 
-// NewFileInfo takes a path as a string and returns a FileInfo struct.
-func NewFileInfo(fpath string) FileInfo {
-	var fi FileInfo
+var myLogger = mylogger.NewFileLogger("../log.txt", "")
 
-	fileInfo, err := os.Stat(fpath)
+// NewFileInfo takes a path as a string and returns a Info struct.
+func NewFileInfo(fpath string) Info {
+	var fi Info
+
+	Info, err := os.Stat(fpath)
 	if err != nil && os.IsNotExist(err) {
 		fi.Exists = false
 	} else if err != nil {
 		myLogger.Print(err)
 	} else {
-		fi.ModTime = fileInfo.ModTime()
+		fi.ModTime = Info.ModTime()
 		fi.Exists = true
 	}
 	fi.FilePath = strings.Split(fpath, strconv.QuoteRune(os.PathSeparator))
@@ -37,7 +40,7 @@ func NewFileInfo(fpath string) FileInfo {
 }
 
 //JSON returns a JSON []byte
-func (fi *FileInfo) JSON() []byte {
+func (fi *Info) JSON() []byte {
 	s, err := json.Marshal(fi)
 	if err != nil {
 		myLogger.Print(err)
@@ -46,8 +49,8 @@ func (fi *FileInfo) JSON() []byte {
 }
 
 //Unmarshal takes the JSON Data as []byte and writes it into the
-//FileInfo
-func (fi *FileInfo) Unmarshal(data []byte) {
+//Info
+func (fi *Info) Unmarshal(data []byte) {
 	err := json.Unmarshal(data, fi)
 	if err != nil {
 		myLogger.Print(err)
