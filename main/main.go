@@ -7,7 +7,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/lyckade/golib/mylogger"
 )
+
+var myLogger = mylogger.NewFileLogger("Log.txt", "")
 
 func main() {
 
