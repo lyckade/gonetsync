@@ -1,5 +1,3 @@
-//gonetsync is a simple programm which allows syncronisation between a server and
-//a client inside local networks
 package main
 
 import (
