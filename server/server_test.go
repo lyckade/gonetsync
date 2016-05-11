@@ -28,9 +28,4 @@ func TestMain(t *testing.T) {
 		//fmt.Printf("%v", string(body))
 	})
 
-	Convey("Conf File should be read", t, func() {
-		conf, _ := loadConf("test_conf.json")
-		So(conf.BackupFolder, ShouldEqual, "path/to/backup/folder")
-	})
-
 }
