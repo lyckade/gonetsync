@@ -3,8 +3,11 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"path"
 	"raspi/apxp/golib/mylogger"
 
 	"github.com/gorilla/mux"
@@ -32,9 +35,24 @@ func ServerFileGET(w http.ResponseWriter, r *http.Request) {
 
 //ServerFilePUT sends a file to the server to store it
 func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Fprintf(w, "%#v: %v", r, conf)
-
+	vars := mux.Vars(r)
+	p := path.Join(
+		conf.BackupFolder,
+		vars["package"],
+		r.FormValue("filepath"))
+	os.MkdirAll(p, 0777)
+	fp := path.Join(p, r.FormValue("filename"))
+	f, err := os.Create(fp)
+	if err != nil {
+		fmt.Fprintln(w, err)
+	}
+	//defer f.Close()
+	_, err = io.Copy(f, r.Body)
+	if err != nil {
+		fmt.Fprintln(w, err)
+	}
+	fmt.Fprintf(w, "%#v", fp)
+	f.Close()
 }
 
 //ClientFileGET is the answer of the server to a file request.
