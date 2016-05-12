@@ -1,26 +1,17 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
-	"raspi/apxp/golib/mylogger"
 
 	"github.com/gorilla/mux"
+	"github.com/lyckade/gonetsync/conf"
 )
 
-//Conf is the configuration structure
-type Conf struct {
-	BackupFolder string `json:"backupFolder"`
-}
-
-var myLogger = mylogger.NewFileLogger("log.txt", "")
-var confFile = "../server/server.conf.json"
-var conf = loadConf(confFile)
+var serverConf = conf.NewServer()
 
 //ServerFileGET is a request to the server to send informations
 //about a file. If the File does exist a os.FileInfo is sent
@@ -37,7 +28,7 @@ func ServerFileGET(w http.ResponseWriter, r *http.Request) {
 func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	p := path.Join(
-		conf.BackupFolder,
+		conf.Server.BackupFolder,
 		vars["package"],
 		r.FormValue("filepath"))
 	os.MkdirAll(p, 0777)
@@ -60,21 +51,4 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 //Because when it already exists there.
 func ClientFileGET(w http.ResponseWriter, r *http.Request) {
 
-}
-
-func loadConf(confFile string) Conf {
-	var err error
-	var b []byte
-	var conf Conf
-	b, err = ioutil.ReadFile(confFile)
-	errorLog(err)
-	err = json.Unmarshal(b, &conf)
-	errorLog(err)
-	return conf
-}
-
-func errorLog(err error) {
-	if err != nil {
-		myLogger.Print(err)
-	}
 }
