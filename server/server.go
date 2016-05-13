@@ -6,7 +6,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/lyckade/golib/mylogger"
-	"github.com/lyckade/gonetsync/conf"
 	"github.com/lyckade/gonetsync/handlers"
 )
 
@@ -15,7 +14,8 @@ var myLogger = mylogger.NewFileLogger("log.txt", "")
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	addRoutes(router)
-	log.Fatal(http.ListenAndServe(conf.Server.ServerAdress, router))
+	//fmt.Println(conf.Server.ServerAdress)
+	log.Fatal(http.ListenAndServe(":8081", router))
 
 }
 

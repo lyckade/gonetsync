@@ -6,12 +6,13 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"raspi/apxp/golib/mylogger"
 
 	"github.com/gorilla/mux"
 	"github.com/lyckade/gonetsync/conf"
 )
 
-var serverConf = conf.NewServer()
+var myLogger = mylogger.NewFileLogger("../serverlog.log", "")
 
 //ServerFileGET is a request to the server to send informations
 //about a file. If the File does exist a os.FileInfo is sent
@@ -20,7 +21,6 @@ func ServerFileGET(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
 	fmt.Fprintf(w, "Package: %#v; Filepath:%s", vars["package"], r.FormValue("filepath"))
-
 	//fmt.Fprintln(w, "No")
 }
 

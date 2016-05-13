@@ -24,6 +24,7 @@ var Server ServerConf
 type ClientConf struct {
 	Port         int    `json:"port"`
 	ServerAdress string `json:"serverAdress"`
+	SyncFolder   string `json:"syncFolder"`
 }
 
 //Client is the configuration of the client
