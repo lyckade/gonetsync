@@ -14,20 +14,24 @@ var Logger = mylogger.NewFileLogger("../log.txt", "")
 //ServerConf represents the configuration of the server
 type ServerConf struct {
 	BackupFolder string `json:"backupFolder"`
+	Port         int    `json:"port"`
 }
 
 //Server is the conf
 var Server ServerConf
 
-//NewServer creates a new server configuration object
-func NewServer() ServerConf {
-	var server ServerConf
-	LoadConf("../server/server.conf.json", &server)
-	return server
+//ClientConf is the structure of the the client json file
+type ClientConf struct {
+	Port         int    `json:"port"`
+	ServerAdress string `json:"serverAdress"`
 }
+
+//Client is the configuration of the client
+var Client ClientConf
 
 func init() {
 	LoadConf("../server/server.conf.json", &Server)
+	LoadConf("../server/client.conf.json", &Client)
 }
 
 //LoadConf loads the configuration from a json file into a
