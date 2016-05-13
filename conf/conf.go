@@ -14,7 +14,7 @@ var Logger = mylogger.NewFileLogger("../log.txt", "")
 //ServerConf represents the configuration of the server
 type ServerConf struct {
 	BackupFolder string `json:"backupFolder"`
-	Port         int    `json:"port"`
+	ServerAdress string `json:"serverAdress"`
 }
 
 //Server is the conf
