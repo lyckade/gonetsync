@@ -30,9 +30,11 @@ func folderWalk(f string) {
 			"file",
 			"dasPacket")*/
 
+			fpath = filepath.Clean(fpath)
 			urlStr := "http://localhost:8081/server/file/testpa"
 			urlValues := url.Values{}
-			urlValues.Add("filepath", fpath)
+
+			urlValues.Add("filepath", filepath.Dir(fpath))
 			urlValues.Add("filename", info.Name())
 			urlStr = urlStr + "?" + urlValues.Encode()
 			fileReader, err1 := os.Open(fpath)
