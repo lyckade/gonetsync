@@ -11,5 +11,5 @@ type ServerConf struct {
 var myConf ServerConf
 
 func init() {
-	conf.LoadConf("server.conf.json", myConf, myLogger)
+	conf.LoadConf("server.conf.json", &myConf, myLogger)
 }

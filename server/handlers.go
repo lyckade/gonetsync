@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/gorilla/mux"
 )
@@ -26,15 +27,15 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	p := path.Join(
 		myConf.BackupFolder,
 		vars["package"],
-		r.FormValue("filepath"))
-	os.MkdirAll(p, 0777)
-	fp := path.Join(p, r.FormValue("filename"))
+		vars["file"])
+	os.MkdirAll(filepath.Dir(p), 0777)
+	fp := p
+	myLogger.Printf("Filepath: %s", fp)
 	f, err := os.Create(fp)
 	if err != nil {
 		fmt.Fprintln(w, err)
 	}
 	defer f.Close()
-
 	_, err = io.Copy(f, r.Body)
 	if err != nil {
 		fmt.Fprintln(w, err)
