@@ -33,7 +33,8 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Fprintln(w, err)
 	}
-	//defer f.Close()
+	defer f.Close()
+
 	_, err = io.Copy(f, r.Body)
 	if err != nil {
 		fmt.Fprintln(w, err)

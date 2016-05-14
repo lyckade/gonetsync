@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
 	"testing"
 
 	"github.com/gorilla/mux"
@@ -13,17 +12,16 @@ import (
 
 func TestMain(t *testing.T) {
 
-	Convey("http routing should work correct", t, func() {
+	Convey("http routing", t, func() {
 		w := httptest.NewRecorder()
 		router := mux.NewRouter()
 		addRoutes(router)
-		urlValues := url.Values{}
-		urlValues.Add("filepath", "eins/zwei/drei")
+
 		req, _ := http.NewRequest("GET",
-			"/server/file/myPackage/dsd/khjsdf/me.txt?"+urlValues.Encode(),
+			"/myPackage/dsd/khjsdf/me.txt",
 			nil)
 		router.ServeHTTP(w, req)
-		fmt.Printf("%v", w)
+		fmt.Printf("%#v", w)
 		//body, _ := ioutil.ReadAll(resp.Body)
 		//fmt.Printf("%v", string(body))
 	})
