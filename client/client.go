@@ -23,7 +23,7 @@ func folderWalk(f string) {
 		//fmt.Printf("%v\n\n", info.ModTime())
 		if info.IsDir() != true {
 
-			urlStr := "http://localhost:8081/server/file/testpa"
+			urlStr := "http://localhost:8081/testpa"
 			urlValues := url.Values{}
 			fpath = filepath.Clean(fpath)
 			fpath, _ = filepath.Rel(f, fpath)

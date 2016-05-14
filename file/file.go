@@ -3,7 +3,9 @@ package file
 import (
 	"encoding/json"
 	"os"
-	"raspi/apxp/golib/mylogger"
+
+	"github.com/lyckade/golib/mylogger"
+
 	"strconv"
 	"strings"
 	"time"

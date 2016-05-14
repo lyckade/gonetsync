@@ -10,7 +10,7 @@ func TestMain(t *testing.T) {
 
 	Convey("fileWalk", t, func() {
 		//folderWalk(conf.Client.SyncFolder)
-		folderWalk("../walk/_test")
+		//folderWalk("../walk/_test")
 	})
 
 }

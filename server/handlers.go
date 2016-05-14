@@ -15,7 +15,7 @@ import (
 //back to the client.
 func ServerFileGET(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-
+	fmt.Fprintln(w, vars["file"])
 	fmt.Fprintf(w, "Package: %#v; Filepath:%s", vars["package"], r.FormValue("filepath"))
 	//fmt.Fprintln(w, "No")
 }

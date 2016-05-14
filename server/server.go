@@ -11,7 +11,7 @@ import (
 var myLogger = mylogger.NewFileLogger("server.log", "")
 
 func main() {
-	router := mux.NewRouter().StrictSlash(true)
+	router := mux.NewRouter()
 	addRoutes(router)
 	//fmt.Println(conf.Server.ServerAdress)
 	log.Fatal(http.ListenAndServe(":8081", router))
@@ -19,7 +19,7 @@ func main() {
 }
 
 func addRoutes(router *mux.Router) {
-	router.HandleFunc("/server/file/{package}/", ServerFileGET).Methods("GET")
-	router.HandleFunc("/server/file/{package}", ServerFilePUT).Methods("PUT")
+	router.HandleFunc(`/{package}/{file:.*}`, ServerFileGET).Methods("GET")
+	router.HandleFunc("/{package}/{file:.*}", ServerFilePUT).Methods("PUT")
 	//	router.HandleFunc("/client/file/{package}", ClientFileGET).Methods("GET")
 }

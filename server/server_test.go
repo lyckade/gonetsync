@@ -20,7 +20,7 @@ func TestMain(t *testing.T) {
 		urlValues := url.Values{}
 		urlValues.Add("filepath", "eins/zwei/drei")
 		req, _ := http.NewRequest("GET",
-			"/server/file/myPackage/dsd?"+urlValues.Encode(),
+			"/server/file/myPackage/dsd/khjsdf/me.txt?"+urlValues.Encode(),
 			nil)
 		router.ServeHTTP(w, req)
 		fmt.Printf("%v", w)
