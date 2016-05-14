@@ -41,10 +41,3 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%#v", fp)
 	f.Close()
 }
-
-//ClientFileGET is the answer of the server to a file request.
-//The client decides wether to send the file via put or not.
-//Because when it already exists there.
-func ClientFileGET(w http.ResponseWriter, r *http.Request) {
-
-}

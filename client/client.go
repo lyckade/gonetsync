@@ -23,16 +23,10 @@ func folderWalk(f string) {
 		//fmt.Printf("%v\n\n", info.ModTime())
 		if info.IsDir() != true {
 
-			/*urlStr := path.Join(
-			"localhost:8081",
-			"server",
-			"file",
-			"dasPacket")*/
-
-			fpath = filepath.Clean(fpath)
 			urlStr := "http://localhost:8081/server/file/testpa"
 			urlValues := url.Values{}
-
+			fpath = filepath.Clean(fpath)
+			fpath, _ = filepath.Rel(f, fpath)
 			urlValues.Add("filepath", filepath.Dir(fpath))
 			urlValues.Add("filename", info.Name())
 			urlStr = urlStr + "?" + urlValues.Encode()
