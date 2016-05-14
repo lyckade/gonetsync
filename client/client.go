@@ -8,13 +8,12 @@ import (
 	"path/filepath"
 
 	"github.com/lyckade/golib/mylogger"
-	"github.com/lyckade/gonetsync/conf"
 )
 
 var myLogger = mylogger.NewFileLogger("../log.txt", "")
 
 func main() {
-	folderWalk(conf.Client.SyncFolder)
+	folderWalk(myConf.SyncFolder)
 }
 
 func folderWalk(f string) {
