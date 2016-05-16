@@ -14,9 +14,16 @@ import (
 
 var myLogger = mylogger.NewFileLogger("client.log", "")
 
+type doer interface {
+	Do(*http.Request) (*http.Response, error)
+}
+
+var myClient = new(http.Client)
+
 const timestampLayout string = "20060102150405"
 
 func main() {
+
 	folderWalk(myConf.SyncFolder)
 }
 
@@ -24,12 +31,12 @@ func folderWalk(baseFolder string) {
 	filepath.Walk(
 		baseFolder,
 		func(fpath string, info os.FileInfo, err error) error {
-			walkFunc(baseFolder, fpath, info, err)
+			walkFunc(baseFolder, fpath, info)
 			return err
 		})
 }
 
-func walkFunc(baseFolder string, fpath string, info os.FileInfo, err error) error {
+func walkFunc(baseFolder string, fpath string, info os.FileInfo) {
 
 	if info.IsDir() != true {
 		ts, _ := makeTimestamp(info)
@@ -41,15 +48,13 @@ func walkFunc(baseFolder string, fpath string, info os.FileInfo, err error) erro
 		fpath = filepath.Clean(fpath)
 
 		url := makeURL(myConf.ServerAdress, packageStr, baseFolder, fpath)
-
+		fmt.Println(url.String())
 		r := makeFileRequest(fpath, url.String())
+		//fmt.Printf("%v", r)
 
-		client := new(http.Client)
-		resp, err3 := client.Do(r)
-		fmt.Println("RESPONSE: ", resp)
-		fmt.Println("RSPERR: ", err3)
+		sendClientRequest(r)
 	}
-	return err
+
 }
 
 func makeTimestamp(info os.FileInfo) (int, error) {
@@ -81,4 +86,10 @@ func makeFileRequest(fpath string, urlStr string) *http.Request {
 		myLogger.Println(err2)
 	}
 	return r
+}
+
+func sendClientRequest(r *http.Request) {
+	resp, err3 := myClient.Do(r)
+	fmt.Println("RESPONSE: ", resp)
+	fmt.Println("RSPERR: ", err3)
 }
