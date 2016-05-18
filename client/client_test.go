@@ -15,6 +15,9 @@ func TestMain(t *testing.T) {
 
 		//Create a test server
 		ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			//fmt.Printf("TEST: %v", r)
+			//myLogger.Printf("Testserver r: %v", r)
+			w.WriteHeader(200)
 			fmt.Fprintln(w, "Hello, client")
 		}))
 		defer ts.Close()

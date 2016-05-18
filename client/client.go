@@ -49,8 +49,18 @@ func walkFunc(baseFolder string, fpath string, info os.FileInfo) {
 
 		url := makeURL(myConf.ServerAdress, packageStr, baseFolder, fpath)
 		fmt.Println(url.String())
-		r := makeFileRequest(fpath, url.String())
-		//fmt.Printf("%v", r)
+		//File reading
+		fileReader, err1 := os.Open(fpath)
+		defer fileReader.Close()
+		if err1 != nil {
+			myLogger.Println("Error opening file ", fpath)
+			myLogger.Println(err1)
+		}
+
+		r, err2 := http.NewRequest("PUT", url.String(), fileReader)
+		if err2 != nil {
+			myLogger.Println(err2)
+		}
 
 		sendClientRequest(r)
 	}
@@ -91,5 +101,6 @@ func makeFileRequest(fpath string, urlStr string) *http.Request {
 func sendClientRequest(r *http.Request) {
 	resp, err3 := myClient.Do(r)
 	fmt.Println("RESPONSE: ", resp)
-	fmt.Println("RSPERR: ", err3)
+	//fmt.Println("RSPERR: ", err3)
+	myLogger.Println(err3)
 }
