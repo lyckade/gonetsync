@@ -14,9 +14,22 @@ import (
 
 var myLogger = mylogger.NewFileLogger("client.log", "")
 
-type doer interface {
+// A Client sends http Request and returns response and error
+type Client interface {
 	Do(*http.Request) (*http.Response, error)
 }
+
+// ClientFunc is a custom type for the implementation of the
+// Client interface
+type ClientFunc func(*http.Request) (*http.Response, error)
+
+// Do implements the Client interface for the ClientFunc
+func (f ClientFunc) Do(r *http.Request) (*http.Response, error) {
+	return f(r)
+}
+
+// Decorator wraps a Client with extra behaviour
+type Decorator func(Client) Client
 
 var myClient = new(http.Client)
 
