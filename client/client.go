@@ -2,6 +2,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -14,69 +15,59 @@ import (
 
 var myLogger = mylogger.NewFileLogger("client.log", "")
 
-// A Client sends http Request and returns response and error
-type Client interface {
-	Do(*http.Request) (*http.Response, error)
-}
-
-// ClientFunc is a custom type for the implementation of the
-// Client interface
-type ClientFunc func(*http.Request) (*http.Response, error)
-
-// Do implements the Client interface for the ClientFunc
-func (f ClientFunc) Do(r *http.Request) (*http.Response, error) {
-	return f(r)
-}
-
-// Decorator wraps a Client with extra behaviour
-type Decorator func(Client) Client
-
 var myClient = new(http.Client)
 
 const timestampLayout string = "20060102150405"
 
-func main() {
+var packageName string
 
-	folderWalk(myConf.SyncFolder)
+func init() {
+	flag.StringVar(&packageName, "p", "DefaultPackage", "Package Name")
+	flag.Parse()
 }
 
-func folderWalk(baseFolder string) {
+func main() {
+
+	folderWalk(myConf.SyncFolder, packageName)
+}
+
+func folderWalk(baseFolder, packageName string) {
 	filepath.Walk(
 		baseFolder,
 		func(fpath string, info os.FileInfo, err error) error {
-			walkFunc(baseFolder, fpath, info)
+			walkFunc(packageName, baseFolder, fpath, info)
 			return err
 		})
 }
 
-func walkFunc(baseFolder string, fpath string, info os.FileInfo) {
-
-	if info.IsDir() != true {
-		ts, _ := makeTimestamp(info)
-		fmt.Println("Timestamp: ", ts)
-
-		packageStr := "meinPacket"
-
-		//Path transformation
-		fpath = filepath.Clean(fpath)
-
-		url := makeURL(myConf.ServerAdress, packageStr, baseFolder, fpath)
-		fmt.Println(url.String())
-		//File reading
-		fileReader, err1 := os.Open(fpath)
-		defer fileReader.Close()
-		if err1 != nil {
-			myLogger.Println("Error opening file ", fpath)
-			myLogger.Println(err1)
-		}
-
-		r, err2 := http.NewRequest("PUT", url.String(), fileReader)
-		if err2 != nil {
-			myLogger.Println(err2)
-		}
-
-		sendClientRequest(r)
+func walkFunc(packageName string, baseFolder string, fpath string, info os.FileInfo) {
+	if info.IsDir() == true {
+		// Exit when Directory
+		return
 	}
+	// When path is from a file
+	ts, _ := makeTimestamp(info)
+	fmt.Println("Timestamp: ", ts)
+
+	//Path transformation
+	fpath = filepath.Clean(fpath)
+
+	url := makeURL(myConf.ServerAdress, packageName, baseFolder, fpath)
+	fmt.Println(url.String())
+	//File reading
+	fileReader, err1 := os.Open(fpath)
+	defer fileReader.Close()
+	if err1 != nil {
+		myLogger.Println("Error opening file ", fpath)
+		myLogger.Println(err1)
+	}
+
+	r, err2 := http.NewRequest("PUT", url.String(), fileReader)
+	if err2 != nil {
+		myLogger.Println(err2)
+	}
+
+	sendClientRequest(r)
 
 }
 
@@ -111,9 +102,10 @@ func makeFileRequest(fpath string, urlStr string) *http.Request {
 	return r
 }
 
-func sendClientRequest(r *http.Request) {
+func sendClientRequest(r *http.Request) *http.Response {
 	resp, err3 := myClient.Do(r)
-	fmt.Println("RESPONSE: ", resp)
+	//fmt.Println("RESPONSE: ", resp)
 	//fmt.Println("RSPERR: ", err3)
 	myLogger.Println(err3)
+	return resp
 }
