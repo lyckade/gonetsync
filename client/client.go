@@ -28,6 +28,7 @@ func init() {
 
 func main() {
 
+	//folderWalk(myConf.SyncFolder, packageName)
 	folderWalk(myConf.SyncFolder, packageName)
 }
 

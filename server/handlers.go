@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
 	"io"
 	"net/http"
@@ -36,7 +37,10 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, err)
 	}
 	defer f.Close()
+	h := md5.New()
 	_, err = io.Copy(f, r.Body)
+	io.Copy(h, r.Body)
+	fmt.Fprintf(w, "%v", h.Sum(nil))
 	if err != nil {
 		fmt.Fprintln(w, err)
 	}
