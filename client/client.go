@@ -9,7 +9,6 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 
 	"github.com/lyckade/golib/mylogger"
 	"github.com/lyckade/gonetsync/file"
@@ -18,8 +17,6 @@ import (
 var myLogger = mylogger.NewFileLogger("client.log", "")
 
 var myClient = new(http.Client)
-
-const timestampLayout string = "20060102150405"
 
 var packageName string
 
@@ -50,13 +47,13 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 	}
 
 	// When path is from a file
-	ts, _ := makeTimestamp(info)
+	ts := makeTimestamp(info)
 	fmt.Println("Timestamp: ", ts)
 
 	//Path transformation
 	fpath = filepath.Clean(fpath)
 
-	url := makeURL(myConf.ServerAdress, packageName, baseFolder, fpath)
+	url := makeURL(myConf.ServerAdress, packageName, baseFolder, fpath, ts)
 	fmt.Println(url.String())
 
 	// Get fileInfo from Server
@@ -92,19 +89,22 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 
 }
 
-func makeTimestamp(info os.FileInfo) (int, error) {
-	ts := info.ModTime().Format(timestampLayout)
-	return strconv.Atoi(ts)
+func makeTimestamp(info os.FileInfo) string {
+	ts := info.ModTime().Format(file.TimestampLayout)
+	return ts
 }
 
-func makeURL(schemeHost string, packageStr string, baseFolder string, filePath string) url.URL {
-	url, err := url.Parse(schemeHost)
+func makeURL(schemeHost, packageStr, baseFolder, filePath, timestamp string) url.URL {
+	u, err := url.Parse(schemeHost)
 	if err != nil {
 		myLogger.Print(err)
 	}
 	relPath, _ := filepath.Rel(baseFolder, filePath)
-	url.Path = packageStr + "/" + filepath.ToSlash(relPath)
-	return *url
+	u.Path = packageStr + "/" + filepath.ToSlash(relPath)
+	v := url.Values{}
+	v.Set("timestamp", timestamp)
+	u.RawQuery = v.Encode()
+	return *u
 }
 
 func makeFileRequest(fpath string, urlStr string) *http.Request {

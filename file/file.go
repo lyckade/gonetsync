@@ -31,6 +31,9 @@ type Info struct {
 
 var myLogger = mylogger.NewFileLogger("../log.txt", "")
 
+// TimestampLayout defines the timestamps
+const TimestampLayout string = "20060102150405"
+
 // NewFileInfo takes a path as a string and returns a Info struct.
 func NewFileInfo(fpath string) Info {
 	var fi Info

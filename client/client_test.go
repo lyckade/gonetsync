@@ -30,8 +30,8 @@ func TestMain(t *testing.T) {
 	})
 
 	Convey("CreateUrl inside filewalk", t, func() {
-		url := makeURL("http://local:1234", "p1", "a/b", "a/b/c/file.txt")
-		So(url.String(), ShouldEqual, "http://local:1234/p1/c/file.txt")
+		url := makeURL("http://local:1234", "p1", "a/b", "a/b/c/file.txt", "20160101")
+		So(url.String(), ShouldEqual, "http://local:1234/p1/c/file.txt?timestamp=20160101")
 
 	})
 

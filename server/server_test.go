@@ -18,7 +18,7 @@ func TestMain(t *testing.T) {
 		addRoutes(router)
 
 		req, _ := http.NewRequest("GET",
-			"/myPackage/dsd/khjsdf/me.txt",
+			"/myPackage/dsd/khjsdf/me.txt?timestamp=222",
 			nil)
 		router.ServeHTTP(w, req)
 		fmt.Printf("%#v", w)
