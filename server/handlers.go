@@ -1,7 +1,6 @@
 package main
 
 import (
-	"crypto/md5"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/gorilla/mux"
+	"github.com/lyckade/gonetsync/file"
 )
 
 //ServerFileGET is a request to the server to send informations
@@ -37,14 +37,15 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintln(w, err)
 	}
 	defer f.Close()
-	h := md5.New()
 	_, err = io.Copy(f, r.Body)
-	io.Copy(h, r.Body)
-	fmt.Fprintf(w, "%x", h.Sum(nil))
-	fmt.Printf("%x\n", h.Sum(nil))
+	//File Info is used for response
+	fi := file.NewFileInfo(fp)
+	fi.MakeHash()
+	w.Write(fi.JSON())
+
 	if err != nil {
 		fmt.Fprintln(w, err)
 	}
-	fmt.Fprintf(w, "%#v", fp)
+
 	f.Close()
 }
