@@ -4,6 +4,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"os"
@@ -105,7 +106,9 @@ func makeFileRequest(fpath string, urlStr string) *http.Request {
 
 func sendClientRequest(r *http.Request) *http.Response {
 	resp, err3 := myClient.Do(r)
-	//fmt.Println("RESPONSE: ", resp)
+	body, _ := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	fmt.Printf("RESPONSE: %s", body)
 	//fmt.Println("RSPERR: ", err3)
 	myLogger.Println(err3)
 	return resp

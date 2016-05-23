@@ -1,7 +1,10 @@
 package file
 
 import (
+	"crypto/md5"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/lyckade/golib/mylogger"
@@ -14,12 +17,16 @@ import (
 // Info is the datatype for the communiction between client and server
 type Info struct {
 	//ModTime the last modification time
-	ModTime time.Time
+	ModTime time.Time `json:"modTime"`
 	//FilePath is a slice of strings because the file is on the server and
 	//the client system
-	FilePath []string
+	FilePath []string `json:"filePath"`
 	//Exists describes if the file exists
-	Exists bool
+	Exists bool `json:"exists"`
+	//Checksum is the md5 hash of the file
+	Checksum string `json:"checksum"`
+	//fileString is the fpath value when the Object is created.
+	fileString string
 }
 
 var myLogger = mylogger.NewFileLogger("../log.txt", "")
@@ -27,7 +34,7 @@ var myLogger = mylogger.NewFileLogger("../log.txt", "")
 // NewFileInfo takes a path as a string and returns a Info struct.
 func NewFileInfo(fpath string) Info {
 	var fi Info
-
+	fi.fileString = fpath
 	Info, err := os.Stat(fpath)
 	if err != nil && os.IsNotExist(err) {
 		fi.Exists = false
@@ -57,4 +64,15 @@ func (fi *Info) Unmarshal(data []byte) {
 	if err != nil {
 		myLogger.Print(err)
 	}
+}
+
+//MakeHash creates the checksum hash
+func (fi *Info) MakeHash() {
+	h := md5.New()
+	f, err := ioutil.ReadFile(fi.fileString)
+	if err != nil {
+		myLogger.Println(err)
+	}
+	h.Write(f)
+	fi.Checksum = fmt.Sprintf("%x", h.Sum(nil))
 }

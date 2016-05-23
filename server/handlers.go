@@ -40,7 +40,8 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	h := md5.New()
 	_, err = io.Copy(f, r.Body)
 	io.Copy(h, r.Body)
-	fmt.Fprintf(w, "%v", h.Sum(nil))
+	fmt.Fprintf(w, "%x", h.Sum(nil))
+	fmt.Printf("%x\n", h.Sum(nil))
 	if err != nil {
 		fmt.Fprintln(w, err)
 	}

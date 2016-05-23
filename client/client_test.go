@@ -23,9 +23,9 @@ func TestMain(t *testing.T) {
 		defer ts.Close()
 
 		fmt.Println(ts.URL)
-		myConf.ServerAdress = ts.URL
+		//myConf.ServerAdress = ts.URL
 
-		folderWalk(myConf.SyncFolder)
+		//folderWalk(myConf.SyncFolder, "test")
 
 	})
 
