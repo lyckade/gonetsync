@@ -17,20 +17,25 @@ import (
 //back to the client.
 func ServerFileGET(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	fmt.Fprintln(w, vars["file"])
-	fmt.Fprintf(w, "Package: %#v; Filepath:%s", vars["package"], r.FormValue("filepath"))
+	fp := makeFilePath(vars)
+	fi := file.NewFileInfo(fp)
+	fi.MakeHash()
+	w.Write(fi.JSON())
+	//fmt.Fprintln(w, vars["file"])
+	//fmt.Fprintf(w, "Package: %#v; Filepath:%s", vars["package"], //r.FormValue("filepath"))
 	//fmt.Fprintln(w, "No")
 }
 
 //ServerFilePUT sends a file to the server to store it
 func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	p := path.Join(
-		myConf.BackupFolder,
-		vars["package"],
-		vars["file"])
-	os.MkdirAll(filepath.Dir(p), 0777)
-	fp := p
+	/*p := path.Join(
+	myConf.BackupFolder,
+	vars["package"],
+	vars["file"])*/
+	fp := makeFilePath(vars)
+	os.MkdirAll(filepath.Dir(fp), 0777)
+
 	myLogger.Printf("Filepath: %s", fp)
 	f, err := os.Create(fp)
 	if err != nil {
@@ -48,4 +53,11 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	}
 
 	f.Close()
+}
+
+func makeFilePath(vars map[string]string) string {
+	return path.Join(
+		myConf.BackupFolder,
+		vars["package"],
+		vars["file"])
 }

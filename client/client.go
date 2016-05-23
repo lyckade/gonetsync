@@ -12,6 +12,7 @@ import (
 	"strconv"
 
 	"github.com/lyckade/golib/mylogger"
+	"github.com/lyckade/gonetsync/file"
 )
 
 var myLogger = mylogger.NewFileLogger("client.log", "")
@@ -47,6 +48,7 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 		// Exit when Directory
 		return
 	}
+
 	// When path is from a file
 	ts, _ := makeTimestamp(info)
 	fmt.Println("Timestamp: ", ts)
@@ -56,6 +58,23 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 
 	url := makeURL(myConf.ServerAdress, packageName, baseFolder, fpath)
 	fmt.Println(url.String())
+
+	// Get fileInfo from Server
+	rfiResp, _ := http.Get(url.String())
+	body, _ := ioutil.ReadAll(rfiResp.Body)
+	rfi := new(file.Info)
+	rfi.Unmarshal(body)
+	if rfi.Exists == true {
+		myLogger.Println("Exists at server: ", fpath)
+		fi := file.NewFileInfo(fpath)
+		fi.MakeHash()
+		if fi.Checksum == rfi.Checksum {
+			myLogger.Println("Same file at server: ", fpath)
+			return
+		}
+
+	}
+
 	//File reading
 	fileReader, err1 := os.Open(fpath)
 	defer fileReader.Close()
@@ -107,9 +126,14 @@ func makeFileRequest(fpath string, urlStr string) *http.Request {
 func sendClientRequest(r *http.Request) *http.Response {
 	resp, err3 := myClient.Do(r)
 	body, _ := ioutil.ReadAll(resp.Body)
+	fi := new(file.Info)
+	fi.Unmarshal(body)
 	defer resp.Body.Close()
-	fmt.Printf("RESPONSE: %s", body)
+	fmt.Printf("RESPONSE: %v", fi)
 	//fmt.Println("RSPERR: ", err3)
-	myLogger.Println(err3)
+	if err3 != nil {
+		myLogger.Println(err3)
+	}
+
 	return resp
 }
