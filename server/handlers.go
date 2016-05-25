@@ -22,7 +22,7 @@ func ServerFileGET(w http.ResponseWriter, r *http.Request) {
 	fi := file.NewFileInfo(fp)
 	fi.MakeHash()
 	w.Write(fi.JSON())
-	fmt.Printf("%v", r.FormValue("timestamp"))
+	//fmt.Printf("%v", r.FormValue("timestamp"))
 	//fmt.Fprintln(w, vars["file"])
 	//fmt.Fprintf(w, "Package: %#v; Filepath:%s", vars["package"], //r.FormValue("filepath"))
 	//fmt.Fprintln(w, "No")
@@ -56,7 +56,6 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	fi := file.NewFileInfo(fp)
 	fi.MakeHash()
 	w.Write(fi.JSON())
-
 	if err != nil {
 		fmt.Fprintln(w, err)
 	}
