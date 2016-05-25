@@ -90,8 +90,8 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 }
 
 func makeTimestamp(info os.FileInfo) string {
-	ts := info.ModTime().Format(file.TimestampLayout)
-	return ts
+	return info.ModTime().Format(file.TimestampLayout)
+	
 }
 
 func makeURL(schemeHost, packageStr, baseFolder, filePath, timestamp string) url.URL {
