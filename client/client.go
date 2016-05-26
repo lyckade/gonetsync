@@ -61,14 +61,15 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 	body, _ := ioutil.ReadAll(rfiResp.Body)
 	rfi := new(file.Info)
 	rfi.Unmarshal(body)
+	myLogger.Println("GET: ", url.String())
 	if rfi.Exists == true {
 		myLogger.Println("Exists at server: ", fpath)
-		fi := file.NewFileInfo(fpath)
-		fi.MakeHash()
+		//fi := file.NewFileInfo(fpath)
+		/*fi.MakeHash()
 		if fi.Checksum == rfi.Checksum {
 			myLogger.Println("Same file at server: ", fpath)
 			return
-		}
+		}*/
 
 	}
 
