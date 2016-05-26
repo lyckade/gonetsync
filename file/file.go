@@ -78,4 +78,5 @@ func (fi *Info) MakeHash() {
 	}
 	h.Write(f)
 	fi.Checksum = fmt.Sprintf("%x", h.Sum(nil))
+	h = md5.New()
 }
