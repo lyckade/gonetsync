@@ -23,6 +23,7 @@ func ServerFileGET(w http.ResponseWriter, r *http.Request) {
 	fi.MakeHash()
 	w.Write(fi.JSON())
 	myLogger.Println("GET: ", fp)
+	r.Body.Close()
 	//fmt.Printf("%v", r.FormValue("timestamp"))
 	//fmt.Fprintln(w, vars["file"])
 	//fmt.Fprintf(w, "Package: %#v; Filepath:%s", vars["package"], //r.FormValue("filepath"))
@@ -56,7 +57,7 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	err = os.Chtimes(fp, timets, timets)
 	//File Info is used for response
 	fi := file.NewFileInfo(fp)
-	fi.MakeHash()
+	//fi.MakeHash()
 	w.Write(fi.JSON())
 	if err != nil {
 		fmt.Fprintln(w, err)
