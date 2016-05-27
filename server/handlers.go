@@ -50,6 +50,7 @@ func ServerFilePUT(w http.ResponseWriter, r *http.Request) {
 	// Copy file from request to server
 	_, err = io.Copy(f, r.Body)
 	f.Close()
+	r.Body.Close()
 	// Set time
 	timets, _ := time.Parse(file.TimestampLayout, r.FormValue("timestamp"))
 	err = os.Chtimes(fp, timets, timets)

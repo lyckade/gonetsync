@@ -64,6 +64,7 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 	myLogger.Println("GET: ", url.String())
 	if rfi.Exists == true {
 		myLogger.Println("Exists at server: ", fpath)
+		return
 		//fi := file.NewFileInfo(fpath)
 		/*fi.MakeHash()
 		if fi.Checksum == rfi.Checksum {
