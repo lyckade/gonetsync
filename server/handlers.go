@@ -20,7 +20,7 @@ func ServerFileGET(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	fp := makeFilePath(vars)
 	fi := file.NewFileInfo(fp)
-	fi.MakeHash()
+	//fi.MakeHash()
 	w.Write(fi.JSON())
 	myLogger.Println("GET: ", fp)
 	r.Body.Close()
