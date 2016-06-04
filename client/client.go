@@ -28,6 +28,7 @@ func init() {
 func main() {
 
 	//folderWalk(myConf.SyncFolder, packageName)
+	packageName = myConf.PackageName
 	folderWalk(myConf.SyncFolder, packageName)
 }
 
@@ -48,24 +49,29 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 
 	// When path is from a file
 	ts := makeTimestamp(info)
-	fmt.Println("Timestamp: ", ts)
 
 	//Path transformation
 	fpath = filepath.Clean(fpath)
 
 	url := makeURL(myConf.ServerAdress, packageName, baseFolder, fpath, ts)
-	fmt.Println(url.String())
 
 	// Get fileInfo from Server
 	rfiResp, _ := http.Get(url.String())
 	body, _ := ioutil.ReadAll(rfiResp.Body)
+	rfiResp.Body.Close()
 	rfi := new(file.Info)
 	rfi.Unmarshal(body)
+	//fmt.Println(url.String())
 	myLogger.Println("GET: ", url.String())
 	if rfi.Exists == true {
 		myLogger.Println("Exists at server: ", fpath)
-		return
-		//fi := file.NewFileInfo(fpath)
+		fi := file.NewFileInfo(fpath)
+		if rfi.ModTime.After(fi.ModTime) ||
+			rfi.ModTime.Equal(fi.ModTime) {
+			// Return when local file is younger or equal remote file
+			//fmt.Println("Abort file exists")
+			return
+		}
 		/*fi.MakeHash()
 		if fi.Checksum == rfi.Checksum {
 			myLogger.Println("Same file at server: ", fpath)
@@ -92,8 +98,9 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 }
 
 func makeTimestamp(info os.FileInfo) string {
-	return info.ModTime().Format(file.TimestampLayout)
-	
+	ts := info.ModTime().Format(file.TimestampLayout)
+	return ts
+
 }
 
 func makeURL(schemeHost, packageStr, baseFolder, filePath, timestamp string) url.URL {
@@ -131,7 +138,7 @@ func sendClientRequest(r *http.Request) *http.Response {
 	fi := new(file.Info)
 	fi.Unmarshal(body)
 	defer resp.Body.Close()
-	fmt.Printf("RESPONSE: %v", fi)
+	fmt.Printf("RESPONSE: %v\n\n", fi)
 	//fmt.Println("RSPERR: ", err3)
 	if err3 != nil {
 		myLogger.Println(err3)

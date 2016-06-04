@@ -7,6 +7,7 @@ type ClientConf struct {
 	Port         int    `json:"port"`
 	ServerAdress string `json:"serverAdress"`
 	SyncFolder   string `json:"syncFolder"`
+	PackageName  string `json:"package"`
 }
 
 var myConf ClientConf
