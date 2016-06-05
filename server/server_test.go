@@ -15,7 +15,7 @@ func TestMain(t *testing.T) {
 	Convey("http routing", t, func() {
 		w := httptest.NewRecorder()
 		router := mux.NewRouter()
-		addRoutes(router)
+		//addRoutes(router)
 
 		req, _ := http.NewRequest("GET",
 			"/myPackage/dsd/khjsdf/me.txt?timestamp=222",
