@@ -16,17 +16,22 @@ import (
 
 var myLogger = mylogger.NewFileLogger("client.log", "")
 
+var logLevel = mylogger.DEBUG
+
 var myClient = new(http.Client)
 
 var packageName string
 
 func init() {
+	mylogger.Level = mylogger.DEBUG
 	flag.StringVar(&packageName, "p", "DefaultPackage", "Package Name")
+	//flag.IntVar(&logLevel, "l", myConf.LogLevel, "Define the log level")
 	flag.Parse()
+	//mylogger.Level = logLevel
 }
 
 func main() {
-
+	mylogger.Level = logLevel
 	//folderWalk(myConf.SyncFolder, packageName)
 	packageName = myConf.PackageName
 	folderWalk(myConf.SyncFolder, packageName)
@@ -62,7 +67,8 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 	rfi := new(file.Info)
 	rfi.Unmarshal(body)
 	//fmt.Println(url.String())
-	myLogger.Println("GET: ", url.String())
+	mylogger.Log(myLogger, mylogger.DEBUG, "GET: ", url.String())
+	//myLogger.Println("GET: ", url.String())
 	if rfi.Exists == true {
 		myLogger.Println("Exists at server: ", fpath)
 		fi := file.NewFileInfo(fpath)
@@ -72,11 +78,6 @@ func walkFunc(packageName string, baseFolder string, fpath string, info os.FileI
 			//fmt.Println("Abort file exists")
 			return
 		}
-		/*fi.MakeHash()
-		if fi.Checksum == rfi.Checksum {
-			myLogger.Println("Same file at server: ", fpath)
-			return
-		}*/
 
 	}
 
