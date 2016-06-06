@@ -14,5 +14,5 @@ type ClientConf struct {
 var myConf ClientConf
 
 func init() {
-	conf.LoadConf("client.conf.json", &myConf, myLogger)
+	conf.LoadConf("client.conf.json", &myConf, myLog)
 }
