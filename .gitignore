@@ -23,5 +23,6 @@ _testmain.go
 *.test
 *.prof
 *.conf.json
+*.packages.json
 *.log
 log.txt

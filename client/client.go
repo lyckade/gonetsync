@@ -33,8 +33,11 @@ func init() {
 func main() {
 	mylogger.Level = logLevel
 	//folderWalk(myConf.SyncFolder, packageName)
-	packageName = myConf.PackageName
-	folderWalk(myConf.SyncFolder, packageName)
+	//packageName = myConf.PackageName
+	//folderWalk(myConf.SyncFolder, packageName)
+	for _, pack := range myPackages {
+		folderWalk(pack.SyncFolder, pack.PackageName)
+	}
 }
 
 func folderWalk(baseFolder, packageName string) {
